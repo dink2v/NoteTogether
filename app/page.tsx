@@ -111,15 +111,16 @@ export default function HomePage() {
 
   useEffect(() => {
     void loadWorkspace();
-    if (!supabase) return;
-    const channel = supabase
+    const client = supabase;
+    if (!client) return;
+    const channel = client
       .channel("notetogether-live-sync")
       .on("postgres_changes", { event: "*", schema: "public", table: "notes" }, () => void loadWorkspace())
       .on("postgres_changes", { event: "*", schema: "public", table: "folders" }, () => void loadWorkspace())
       .subscribe();
     const timers = saveTimers.current;
     return () => {
-      void supabase.removeChannel(channel);
+      void client.removeChannel(channel);
       Object.values(timers).forEach(clearTimeout);
     };
   }, [loadWorkspace]);
