@@ -37,7 +37,20 @@ function relativeTime(value: string) {
   return new Date(value).toLocaleDateString("id-ID", { day: "numeric", month: "short" });
 }
 
-function mapNote(row: any): Note {
+type NoteRow = {
+  id: string;
+  folder_id: string | null;
+  title: string | null;
+  content: string | null;
+  folders: { name: string } | null;
+  updated_at: string;
+  favorite: boolean | null;
+  color: string | null;
+  author_name: string | null;
+  deleted_at: string | null;
+};
+
+function mapNote(row: NoteRow): Note {
   return {
     id: row.id,
     folder_id: row.folder_id,
@@ -104,9 +117,10 @@ export default function HomePage() {
       .on("postgres_changes", { event: "*", schema: "public", table: "notes" }, () => void loadWorkspace())
       .on("postgres_changes", { event: "*", schema: "public", table: "folders" }, () => void loadWorkspace())
       .subscribe();
+    const timers = saveTimers.current;
     return () => {
       void supabase.removeChannel(channel);
-      Object.values(saveTimers.current).forEach(clearTimeout);
+      Object.values(timers).forEach(clearTimeout);
     };
   }, [loadWorkspace]);
 
