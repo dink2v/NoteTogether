@@ -160,14 +160,15 @@ export default function HomePage() {
   }
 
   function updateSelected(patch: Partial<Pick<Note, "title" | "content">>) {
-    if (!selected || !supabase) return;
+    const client = supabase;
+    if (!selected || !client) return;
     const updated = { ...selected, ...patch, preview: (patch.content ?? selected.content).replace(/\s+/g, " ").slice(0, 100) };
     setNotes((current) => current.map((note) => note.id === selected.id ? updated : note));
     setSaved(false);
     const id = selected.id;
     if (saveTimers.current[id]) clearTimeout(saveTimers.current[id]);
     saveTimers.current[id] = setTimeout(async () => {
-      const { error } = await supabase.from("notes").update({
+      const { error } = await client.from("notes").update({
         title: updated.title,
         content: updated.content
       }).eq("id", id);
