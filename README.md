@@ -2,30 +2,42 @@
 
 A calm shared notes workspace for two people.
 
-## Current stage
+## Current features
 
-The first UI prototype is in place:
-- Shared workspace with three visible folders: Shared Space, Udin, and Teman
-- Notes list and editor layout
-- Create, edit, favorite, search, delete, and restore interactions (prototype state only)
-- Responsive sidebar and mobile layout
+- Shared folders: Shared Space, Udin, and Teman
+- Create and edit notes with automatic saving
+- Favorites, search, and Trash with restore
+- Supabase Realtime updates across open devices
+- Responsive layout for desktop and mobile
 
 ## Stack
 
-- Next.js App Router
-- React + TypeScript
+- Next.js 15, React 19, and TypeScript
+- Supabase Postgres, Data API, and Realtime
 - Lucide icons
-- Supabase will be added for shared persistence and realtime sync
 
 ## Run locally
 
-```bash
-npm install
-npm run dev
-```
+1. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+2. Copy `.env.example` to `.env.local` and set the Supabase project URL and publishable key.
+
+3. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
 
 Open http://localhost:3000.
 
-## Important
+## Database
 
-The current UI uses in-memory sample data. Changes are not yet stored in a database or shared between devices. Supabase integration and access controls are the next implementation stage.
+The SQL migrations are in `supabase/migrations`. The initial schema creates the shared folders and notes tables, enables RLS, grants the anonymous client role access, and enables Realtime for both tables.
+
+## Access warning
+
+This prototype intentionally uses anonymous shared access so the two intended users can open one link without signing in. Anyone who obtains that link can potentially read, create, edit, or delete workspace content. Do not store passwords, financial details, or other sensitive information. Add proper authentication and per-workspace authorization before using this for confidential notes.
